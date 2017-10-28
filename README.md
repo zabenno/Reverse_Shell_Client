@@ -1,2 +1,2 @@
 # Reverse_Shell_Client
-Runs a reverse TCP Powershell on a client.
+Runs a command line service on client for remote access via reverse.
