@@ -10,6 +10,10 @@ namespace ReverseTCPClient
         private string outputRecieved = "";
         private Process CommandInterface = new Process();
 
+        /// <summary>
+        /// Sets up a Process object, defualting as CMD, and begins its execution.
+        /// </summary>
+        /// <param name="filename">The windows service to be run.</param>
         public CommandLine(string filename = "CMD.exe")
         {
             //Setting up Process to be run.
@@ -30,6 +34,11 @@ namespace ReverseTCPClient
             CommandInterface.BeginErrorReadLine();
         }
 
+        /// <summary>
+        /// Event handler for receiving data from the commandline.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="line">arguments for the event.</param>
         void dataReceieved(object sender, DataReceivedEventArgs line)
         {
             lock (outputLock)
@@ -58,6 +67,10 @@ namespace ReverseTCPClient
             CommandInterface.CancelErrorRead();
         }
 
+        /// <summary>
+        /// Safely returns data from the Commandline.
+        /// </summary>
+        /// <returns>String containing all data received so far.</returns>
         public string dataReturned()
         {
             string output = "";
